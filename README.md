@@ -15,13 +15,13 @@
 * Initialize packer
 
     ```bash
-    packer init -upgrade ws2022.pkr.hcl
+    packer init -upgrade WinServ2022.pkr.hcl
     ```
 
 * Create the image
 
     ```bash
-    packer build -timestamp-ui -force -var-file=myvarfile.json ws2022.pkr.hcl
+    packer build -timestamp-ui -force -var-file=myvarfile.json WinServ2022.pkr.hcl
     ```
 
 ## Deploy VMs (terraform)
