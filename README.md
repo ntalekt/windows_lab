@@ -97,7 +97,7 @@ Configures the VMs once they are deployed.
     mv myvarfile.json.example myvarfile.json
     ```
 
-* Update variables in `WinServ2022.pkr.hcl`
+* Update variables in `WinServ2022.pkr.hcl` (mainly the location of the VMware tools /ISO/windows.iso)
 
 * Initialize packer
 
@@ -162,7 +162,7 @@ Configures the VMs once they are deployed.
     ansible all -i inventory.yml -m win_ping -vvv
     ```
 
-* 
+* I dunno
 
 ## References
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)
