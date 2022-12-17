@@ -15,13 +15,13 @@
 * Initialize packer
 
     ```bash
-    packer init -upgrade ws2022.pkr.hcl
+    packer init -upgrade WinServ2022.pkr.hcl
     ```
 
 * Create the template
 
     ```bash
-    packer build -timestamp-ui -force -var-file=myvarfile.json ws2022.pkr.hcl
+    packer build -timestamp-ui -force -var-file=myvarfile.json WinServ2022.pkr.hcl
     ```
 > **Note**
 > This will result in a template in your vSphere infrastructure named WinServ2022 and an ovf in the build directory.
