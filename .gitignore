@@ -1,3 +1,4 @@
 packer/myvarfile.json
+packer/build/*
 ansible/group_vars/all.yml
 terraform/terraform.tfvars

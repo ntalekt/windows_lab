@@ -7,7 +7,7 @@ vsphere_dscluster       = "DatastoreCluster"
 vsphere_compute_cluster = "cluster01"
 vsphere_portgroup_name  = "VM Management"
 vsphere_folder          = "Terraform-VMs"
-vsphere_template_name   = "WinServ2022-Template"
+vsphere_template_name   = "WinServ2022"
 
 # Which Windows administrator password to set during vm customization
 winadmin_password = "Password1234"
