@@ -1,0 +1,10 @@
+{   
+    "vcenter_server": "vcenter.windows.lab",
+    "vcenter_user": "administrator@vsphere.local",
+    "vcenter_password": "Password1234",
+    "vcenter_datacenter": "DC-01",
+    "vcenter_datastore": "datastore1",
+    "esx_host": "192.168.20.21",
+    "esx_user": "root",
+    "esx_password": "Password1234"
+}

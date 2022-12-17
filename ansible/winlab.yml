@@ -1,0 +1,16 @@
+---
+- hosts: pdc
+  roles:
+    - pdc
+    - pdc_userdata
+    - common
+
+- hosts: cs
+  roles:
+    - connection_server
+    - common
+
+- hosts: csr
+  roles:
+    - connection_server_replica
+    - common

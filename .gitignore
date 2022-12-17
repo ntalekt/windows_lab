@@ -1,0 +1,3 @@
+packer/myvarfile.json
+ansible/group_vars/all.yml
+terraform/terraform.tfvars

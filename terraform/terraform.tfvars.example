@@ -1,0 +1,39 @@
+# vsphere related params
+vsphere_user            = "administrator@vsphere.local"
+vsphere_password        = "Password1234"
+vsphere_server          = "vcenter.windows.lab"
+vsphere_dc_name         = "DC-01"
+vsphere_dscluster       = "DatastoreCluster"
+vsphere_compute_cluster = "cluster01"
+vsphere_portgroup_name  = "VM Management"
+vsphere_folder          = "Terraform-VMs"
+vsphere_template_name   = "WinServ2022-Template"
+
+# Which Windows administrator password to set during vm customization
+winadmin_password = "Password1234"
+
+# Firmware of template
+firmware = "efi"
+
+# Primary Domain Controller settings
+PDC_name    = "dc01"
+PDC_IP      = "192.168.20.50"
+PDC_cpu_num = 2
+PDC_mem     = 6144
+
+# Horizon Connection Server settings
+ConnServ_name    = "cs01"
+ConnServ_IP      = "192.168.20.100"
+ConnServ_cpu_num = 2
+ConnServ_mem     = 4096
+
+# Horizon Connection Server 2 settings
+ConnServ2_name    = "cs02"
+ConnServ2_IP      = "192.168.20.101"
+ConnServ2_cpu_num = 2
+ConnServ2_mem     = 4096
+
+# Common network params
+netmask    = "24"
+def_gw     = "192.168.20.1"
+dns_server = "192.168.1.2"
