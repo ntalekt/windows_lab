@@ -1,4 +1,8 @@
 # Variables that need to be set for the build
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+}
+
 variable "vcenter_server" {
   type    = string
   description = "The hostname of the vCenter server to use for building"
@@ -105,7 +109,7 @@ variable "vm_name" {
 
 variable "vm_notes" {
   type    = string
-  default = "Automated Server"
+  default = "I was created by packer on "
   description = "Notes appearing for each deployed VM"
 }
 
@@ -145,7 +149,7 @@ source "vsphere-iso" "WinServ2022" {
     network      = "VM Network"
     network_card = "vmxnet3"
   }
-  notes                     = "${var.vm_notes}"
+  notes                     = "${var.vm_notes}${local.timestamp}"
   password                  = "${var.vcenter_password}"
   remove_cdrom              = true
   shutdown_command          = "C:\\Windows\\system32\\Sysprep\\sysprep.exe /generalize /oobe /shutdown /unattend:A:\\sysprep-autounattend.xml"
