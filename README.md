@@ -10,7 +10,7 @@
     mv myvarfile.json.example myvarfile.json
     ```
 
-* Update variables in `WinServ2022.pkr.hcl`
+* Update variables in `WinServ2022.pkr.hcl` (mainly the location of the VMware tools /ISO/windows.iso)
 
 * Initialize packer
 
@@ -66,4 +66,4 @@
     ansible all -i inventory.yml -m win_ping -vvv
     ```
 
-* 
+* I dunno
