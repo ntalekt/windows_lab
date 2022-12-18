@@ -15,7 +15,7 @@
     dest: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe
 
 - name: install connection server
-  win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=1 VDM_INITIAL_ADMIN_SID="S-1-5-21-931911891" VDM_SERVER_RECOVERY_PWD="Password1234" VDM_SERVER_RECOVERY_PWD_REMINDER="nothing""
+  win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=1 HTMLACCESS=1 VDM_INITIAL_ADMIN_SID="S-1-5-32-544" VDM_SERVER_RECOVERY_PWD="Password1234" VDM_SERVER_RECOVERY_PWD_REMINDER="nothing""
   become: yes
   become_method: runas
   become_user: "{{ domain_admin }}"
@@ -26,8 +26,13 @@
 - name: check for connection server
   win_stat:
     path: 'C:\Program Files\VMware\VMware View\Server\bin\ws_ConnectionServer.exe'
-  register: connection_info
+  register: connection_info_after
 
 - name: reboot after connect server installed
   win_reboot:
-  when: connection_info.stat.exists == True
+    msg: "Installing VMware Horizon Connection Server. Rebooting..."
+    pre_reboot_delay: 15
+    reboot_timeout: 600
+    post_reboot_delay: 420
+  when: connection_info_after.stat.exists == True
+
