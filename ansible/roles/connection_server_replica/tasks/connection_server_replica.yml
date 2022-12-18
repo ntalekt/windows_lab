@@ -1,0 +1,33 @@
+---
+- name: check for connection server
+  win_stat:
+    path: 'C:\Program Files\VMware\VMware View\Server\bin\ws_ConnectionServer.exe'
+  register: connection_info
+
+- name: create a folder for installers
+  win_file:
+    path: C:\Install
+    state: directory
+
+- name: download connection server installer
+  win_get_url:
+    url: https://ha.rickrocklin.com/local/VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe
+    dest: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe
+
+- name: install connection server
+  win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=2 VDM_INITIAL_ADMIN_SID="S-1-5-21-931911891" VDM_SERVER_RECOVERY_PWD="Password1234" VDM_SERVER_RECOVERY_PWD_REMINDER="nothing""
+  become: yes
+  become_method: runas
+  become_user: "{{ domain_admin }}"
+  vars:
+    ansible_become_password: "{{ domain_admin_password }}"
+  when: connection_info.stat.exists == False
+
+- name: check for connection server
+  win_stat:
+    path: 'C:\Program Files\VMware\VMware View\Server\bin\ws_ConnectionServer.exe'
+  register: connection_info
+
+- name: reboot after connect server installed
+  win_reboot:
+  when: connection_info.stat.exists == True

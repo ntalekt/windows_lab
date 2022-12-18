@@ -175,7 +175,11 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
     ansible all -i inventory.yml -m win_ping -vvv
     ```
 
-* I dunno
+* Run the playbook to configure the servers
+
+    ```bash
+    ansible-playbook winlab.yml
+    ```
 
 ## References
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)
