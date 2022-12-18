@@ -4,4 +4,4 @@ ansible/group_vars/all.yml
 terraform/terraform.tfvars
 terraform/.terraform/*
 terraform/.terraform*
-terraform/terraform.tfstate
+terraform/terraform.tfstate*
