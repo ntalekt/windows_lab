@@ -148,6 +148,19 @@ Configures the VMs once they are deployed.
     terraform apply -auto-approve -parallelism=1
     ```
 
+> **Note**
+> This will result in 3 VMs being creating using the variables defined in `terraform.tfvars`
+
+```bash
+...
+vsphere_virtual_machine._PDC: Creation complete after 10m11s [id=420b41aa-e3fc-8ae7-19a2-537ba43fb62b]
+...
+vsphere_virtual_machine._ConnServ: Creation complete after 10m59s [id=420bf9b2-4ed7-a291-fe8f-df3a07d019ab]
+...
+vsphere_virtual_machine._ConnServ2: Creation complete after 9m50s [id=420baf8a-8b33-95d0-8720-b0efb2e56f1f]
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+```
+
 ### Configure VMs (ansible)
 
 * Update variables in `all.yml.example` and rename
