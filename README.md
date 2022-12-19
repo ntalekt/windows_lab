@@ -160,6 +160,8 @@ vsphere_virtual_machine._ConnServ: Creation complete after 10m59s [id=420bf9b2-4
 vsphere_virtual_machine._ConnServ2: Creation complete after 9m50s [id=420baf8a-8b33-95d0-8720-b0efb2e56f1f]
 Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 ```
+> **Warning**
+> Remove the VMs by running `terraform apply -auto-approve -destroy`
 
 ### Configure VMs (ansible)
 
@@ -180,6 +182,9 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
     ```bash
     ansible-playbook winlab.yml
     ```
+
+> **Note**
+> Limit running ansible plays against only cs and csr hosts and output in verbose `ansible-playbook winlab.yml --limit "cs,csr" -vvv`
 
 ## References
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)
