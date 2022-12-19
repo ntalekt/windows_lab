@@ -175,11 +175,11 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 * Run the playbook to configure the servers
 
     ```bash
-    ansible-playbook winlab.yml
+    ansible-playbook winlab_install.yml
     ```
 
 > **Note**
-> Limit running ansible plays against only cs and csr hosts and output in verbose `ansible-playbook winlab.yml --limit "cs,csr" -vvv`
+> Limit running ansible plays against only cs and csr hosts and output in verbose `ansible-playbook winlab_install.yml --limit "cs,csr" -vvv`
 
 ## References
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)
