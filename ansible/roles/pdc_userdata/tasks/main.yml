@@ -56,7 +56,6 @@
     state: present
     path: "ou=Admins, dc={{ netbios_domain }}, dc={{ top_level_domain }}"
     groups: 
-    - Employees
     - Domain Users
     - Domain Admins
     - Enterprise Admins
