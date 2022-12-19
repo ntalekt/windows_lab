@@ -38,4 +38,3 @@
     reboot_timeout: 600
     post_reboot_delay: 420
   when: connection_info_after.stat.exists == True
-
