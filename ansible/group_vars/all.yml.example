@@ -20,3 +20,9 @@ connection_server_replica: "cs02"
 fqdn_primary_domain_controller: "{{ primary_domain_controller }}.{{ domain }}"
 fqdn_connection_server: "{{ connection_server }}.{{ domain }}"
 fqdn_connection_server_replica: "{{ connection_server_replica }}.{{ domain }}"
+
+install_folder: C:\Install\
+install_url_host: "https://some-web-endpoint.com/local/"
+install_binary: "VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe"
+install_url: "{{ install_url_host }}{{ install_binary }}"
+install_binary_dest: "{{ install_folder }}{{ install_binary }}"
