@@ -6,10 +6,10 @@
     - common
 - hosts: cs
   roles:
-    - connection_server
+    - connection_server_install
     - common
 
 - hosts: csr
   roles:
-    - connection_server_replica
+    - connection_server_replica_install
     - common

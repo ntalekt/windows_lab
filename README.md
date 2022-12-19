@@ -77,15 +77,10 @@ Configures the VMs once they are deployed.
 #### **Files**
 
 * `inventory.yml` inventory of the hosts we will be touching
-* `winlab.yml` an association of the roles to the servers
+* `winlab_install.yml` an association of the roles to the servers
 * `ansible.cfg` main hotness
 * `group_vars/all.yml` defines all they key:value pairs needed
-* `roles/*` all the different roles and stuff that tells ansible what it needs to do
-* **TODO**: Need to figure out howto create two roles. One that installs VMware Horizon Connection Server in primary, and the other as a replica. 
-  * [Install Horizon Connection Server Silently - 2209](https://docs.vmware.com/en/VMware-Horizon/2209/horizon-installation/GUID-3790D978-3D71-4D25-8A36-D8F2A9838B7C.html)
-    * [Silent Installation Properties for a Horizon Connection Server Standard Installation](https://docs.vmware.com/en/VMware-Horizon/2209/horizon-installation/GUID-56F893BE-91D0-44CF-9C5B-26E28926C3F8.html)
-  * [Horizon View Connection Server with Ansible](https://www.codecrusaders.nl/devops/ansible/horizon-view-connection-server-with-ansible/)
-  * [ansible.windows.win_package module – Installs/uninstalls an installable package](https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_package_module.html#examples)
+* `roles/*` all the different roles and stuff that tells ansible what it needs to do (**hint**: look in `winlab_install.yml`)
 
 ## Process
 
@@ -142,7 +137,7 @@ Configures the VMs once they are deployed.
     terraform plan
     ```
 
-* Actually deploy the VMs (parallelism=1 because my lab is slow)
+* Actually deploy the VMs (parallelism=1 because my lab is slow :dizzy_face:) 
 
     ```bash
     terraform apply -auto-approve -parallelism=1
@@ -190,3 +185,7 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)
 * Dmitry Teslya [GitHub](https://github.com/dteslya/win-iac-lab)
 * Austin Cinderblook [GitHub](https://github.com/Cinderblook/tacklebox)
+* [Install Horizon Connection Server Silently - 2209](https://docs.vmware.com/en/VMware-Horizon/2209/horizon-installation/GUID-3790D978-3D71-4D25-8A36-D8F2A9838B7C.html)
+  * [Silent Installation Properties for a Horizon Connection Server Standard Installation](https://docs.vmware.com/en/VMware-Horizon/2209/horizon-installation/GUID-56F893BE-91D0-44CF-9C5B-26E28926C3F8.html)
+* [Horizon View Connection Server with Ansible](https://www.codecrusaders.nl/devops/ansible/horizon-view-connection-server-with-ansible/)
+* [ansible.windows.win_package module – Installs/uninstalls an installable package](https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_package_module.html#examples)

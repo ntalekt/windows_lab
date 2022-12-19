@@ -9,11 +9,14 @@
     path: C:\Install
     state: directory
 
+# TODO: Where is this going to be stored long term?
+# TODO: Parameterize this
 - name: download connection server installer
   win_get_url:
     url: https://ha.rickrocklin.com/local/VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe
     dest: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe
 
+# TODO: Parameterize this
 - name: install connection server
   win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=1 HTMLACCESS=1 VDM_INITIAL_ADMIN_SID="S-1-5-32-544" VDM_SERVER_RECOVERY_PWD="Password1234" VDM_SERVER_RECOVERY_PWD_REMINDER="nothing""
   become: yes
