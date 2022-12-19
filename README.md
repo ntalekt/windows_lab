@@ -137,7 +137,7 @@ Configures the VMs once they are deployed.
     terraform plan
     ```
 
-* Actually deploy the VMs (parallelism=1 because my lab is slow :dizzy_face:) 
+* Actually deploy the VMs (parallelism=1 because my lab is slow :turtle:) 
 
     ```bash
     terraform apply -auto-approve -parallelism=1
@@ -180,6 +180,21 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 
 > **Note**
 > Limit running ansible plays against only cs and csr hosts and output in verbose `ansible-playbook winlab_install.yml --limit "cs,csr" -vvv`
+
+## Credentials  - or look in `ansible/roles/pdc_userdata/tasks/main.yml`
+
+* The local administrator for the VMs:
+
+  | Username | Password |
+  | -------- | -------- |
+  | `administrator` | `Password1234`|
+
+* The domain accounts:
+
+  | Username | Password |
+  | -------- | -------- |
+  | `windows_lab\admin` | `Password1234`|
+  | `windows_lab\horizonadmin` | `Password1234`|
 
 ## References
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)

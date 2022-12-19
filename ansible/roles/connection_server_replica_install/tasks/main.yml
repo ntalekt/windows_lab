@@ -16,6 +16,8 @@
 
 - name: reboot after domain join
   win_reboot:
+    msg: "ansible just added me to the domain... Rebooting..."
+    pre_reboot_delay: 15
   when: domain_joined.reboot_required
 
 - include: connection_server_replica.yml
