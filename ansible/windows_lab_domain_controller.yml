@@ -1,6 +1,0 @@
----
-- hosts: pdc
-  roles:
-    - pdc
-    - pdc_userdata
-    - common

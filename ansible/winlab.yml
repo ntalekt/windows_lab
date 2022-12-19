@@ -1,4 +1,9 @@
 ---
+- hosts: pdc
+  roles:
+    - pdc
+    - pdc_userdata
+    - common
 - hosts: cs
   roles:
     - connection_server
