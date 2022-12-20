@@ -8,15 +8,18 @@
   win_file:
     path: "{{ install_folder }}"
     state: directory
+  when: connection_info.stat.exists == False
 
 - name: download connection server installer
   win_get_url:
     url: "{{ install_url }}"
     dest: "{{ install_binary_dest }}"
+  when: connection_info.stat.exists == False
 
 # TODO: Parameterize this
-- name: install connection server
-  win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=2 HTMLACCESS=1 ADAM_PRIMARY_NAME="cs01.windows_lab.local" VDM_INITIAL_ADMIN_SID="S-1-5-32-544""
+# bandaid to get hz_admin group sid VDM_INITIAL_ADMIN_SID=
+- name: install connection server replica
+  win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=2 HTMLACCESS=1 ADAM_PRIMARY_NAME="cs01.windows_lab.local" VDM_INITIAL_ADMIN_SID="{{lookup('ansible.builtin.file', '/home/vagrant/github/windows_lab/ansible/bandaid.txt') }}""
   become: yes
   become_method: runas
   become_user: "{{ domain_admin }}"
@@ -35,4 +38,4 @@
     pre_reboot_delay: 15
     reboot_timeout: 900
     post_reboot_delay: 600
-  when: connection_info_after.stat.exists == True
+  when: (connection_info.stat.exists == False and connection_info_after.stat.exists == True)

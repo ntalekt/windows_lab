@@ -1,9 +1,12 @@
 ---
 - name: create Horizon admin group
-  ansible.windows.win_group:
+  win_domain_group:
     name: hz_admin
-    description: Horizon Admins
-    state: present
+    scope: domainlocal
+    category: security
+    attributes:
+      mail: helpdesk@ansible.com
+      wWWHomePage: www.ansible.com
 
 - name: install nuget packge for OU creation
   win_shell: install-packageprovider -name nuget -force
@@ -33,3 +36,20 @@
     domain_username: "{{ domain_admin_username }}"
     domain_password: "{{ domain_admin_password }}"
     domain_server: "{{ primary_domain_controller }}"
+
+# start bandaid for hz_admin user sid required for connection server install
+# wouldn't be a problem if AD already existed and sid was just a normal parameter
+- name: get the sid for hz_admin group
+  community.windows.win_domain_object_info:
+    ldap_filter: (&(objectCategory=group)(name=hz_admin))
+    properties:
+    - objectSid
+  register: admin_group
+
+- name: put the sid in the contents of a file
+  ansible.builtin.copy:
+    content: "{{ admin_group.objects[0].objectSid.Sid }}"
+    dest: 'C:\bandaid.txt'
+
+- name: fetch the file containing the sid
+  fetch: src=C:/bandaid.txt dest=~/github/windows_lab/ansible/bandaid.txt flat=yes
