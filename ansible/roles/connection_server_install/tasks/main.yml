@@ -20,4 +20,11 @@
     pre_reboot_delay: 15
   when: domain_joined.reboot_required
 
+- name: add hz_admin group to local admin
+  win_group_membership:
+    name: Administrators
+    members:
+      - windows_lab\hz_admin
+    state: present
+
 - include: connection_server_standard.yml

@@ -5,3 +5,4 @@ terraform/terraform.tfvars
 terraform/.terraform/*
 terraform/.terraform*
 terraform/terraform.tfstate*
+ansible/bandaid.txt
