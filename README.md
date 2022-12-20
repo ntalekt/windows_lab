@@ -181,7 +181,11 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 > **Note**
 > Limit running ansible plays against only cs and csr hosts and output in verbose `ansible-playbook winlab_install.yml --limit "cs,csr" -vvv`
 
-## Credentials  - or look in `ansible/roles/pdc_userdata/tasks/main.yml`
+## Horizon Connection Servers
+
+![Horizon Connection Servers](https://ha.rickrocklin.com/local/horizon_ui_connection_servers.png)
+
+## Credentials
 
 * The local administrator for the VMs:
 
@@ -194,6 +198,14 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
   | Username | Password |
   | -------- | -------- |
   | `windows_lab\horizonadmin` | `Password1234`|
+
+## Servers
+
+  | Server | IP | Purpose |
+  | -------- | -------- | -------- |
+  | `dc01.windows_lab.local` | `192.168.20.50` | `Domain Controller` |
+  | `cs01.windows_lab.local` | `192.168.20.100` | `Connection Server (standard)` |
+  | `cs02.windows_lab.local` | `192.168.20.101` | `Connection Server (replica)` |
 
 ## References
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)
