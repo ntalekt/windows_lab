@@ -14,12 +14,6 @@ domain_admin_password: "Password1234"
 domain_safemode_password: "Password1234"
 
 primary_domain_controller: "dc01"
-connection_server: "cs01"
-connection_server_replica: "cs02"
-
-fqdn_primary_domain_controller: "{{ primary_domain_controller }}.{{ domain }}"
-fqdn_connection_server: "{{ connection_server }}.{{ domain }}"
-fqdn_connection_server_replica: "{{ connection_server_replica }}.{{ domain }}"
 
 install_folder: C:\Install\
 install_url_host: "https://some-web-endpoint.com/local/"

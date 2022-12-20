@@ -1,5 +1,5 @@
-resource "vsphere_virtual_machine" "_ConnServ" {
-  name                 = var.ConnServ_name
+resource "vsphere_virtual_machine" "_ConnServ3" {
+  name                 = var.ConnServ3_name
   folder               = var.vsphere_folder
   firmware             = var.firmware
   resource_pool_id     = data.vsphere_compute_cluster.cluster.resource_pool_id
@@ -10,8 +10,8 @@ resource "vsphere_virtual_machine" "_ConnServ" {
     adapter_type = data.vsphere_virtual_machine.Win2022GUI_template.network_interface_types[0]
   }
 
-  num_cpus  = var.ConnServ_cpu_num
-  memory    = var.ConnServ_mem
+  num_cpus  = var.ConnServ3_cpu_num
+  memory    = var.ConnServ3_mem
   guest_id  = data.vsphere_virtual_machine.Win2022GUI_template.guest_id
   scsi_type = data.vsphere_virtual_machine.Win2022GUI_template.scsi_type
 
@@ -27,7 +27,7 @@ resource "vsphere_virtual_machine" "_ConnServ" {
 
     customize {
       windows_options {
-        computer_name    = var.ConnServ_name
+        computer_name    = var.ConnServ3_name
         admin_password   = var.winadmin_password
         auto_logon       = true
         auto_logon_count = 1
@@ -43,7 +43,7 @@ resource "vsphere_virtual_machine" "_ConnServ" {
       }
 
       network_interface {
-        ipv4_address    = var.ConnServ_IP
+        ipv4_address    = var.ConnServ3_IP
         ipv4_netmask    = var.netmask
         dns_server_list = ["${var.dns_server}"]
       }

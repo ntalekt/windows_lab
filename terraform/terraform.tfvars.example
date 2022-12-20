@@ -21,17 +21,23 @@ PDC_IP      = "192.168.20.50"
 PDC_cpu_num = 2
 PDC_mem     = 6144
 
-# Horizon Connection Server settings
-ConnServ_name    = "cs01"
-ConnServ_IP      = "192.168.20.100"
-ConnServ_cpu_num = 2
-ConnServ_mem     = 4096
+# Horizon Connection Server 1 settings (standard)
+ConnServ1_name    = "cs01"
+ConnServ1_IP      = "192.168.20.101"
+ConnServ1_cpu_num = 4
+ConnServ1_mem     = 8192
 
-# Horizon Connection Server 2 settings
+# Horizon Connection Server 2 settings (replica 1)
 ConnServ2_name    = "cs02"
-ConnServ2_IP      = "192.168.20.101"
+ConnServ2_IP      = "192.168.20.102"
 ConnServ2_cpu_num = 2
 ConnServ2_mem     = 4096
+
+# Horizon Connection Server 3 settings (replica 2)
+ConnServ3_name    = "cs03"
+ConnServ3_IP      = "192.168.20.103"
+ConnServ3_cpu_num = 2
+ConnServ3_mem     = 4096
 
 # Common network params
 netmask    = "24"

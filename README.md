@@ -1,12 +1,31 @@
 # Lab for VMware Horizon
 
-## **Overview**
+- [Lab for VMware Horizon](#lab-for-vmware-horizon)
+  * [Overview](#overview)
+    + [Prerequisites](#prerequisites)
+    + [Packer](#packer)
+      - [File definitions](#files)
+    + [Terraform](#terraform)
+      - [File definitions](#files-1)
+    + [Ansible](#ansible)
+      - [File definitions](#files-2)
+  * [Process](#process)
+    + [Image Creation (packer)](#image-creation--packer-)
+    + [Deploy VMs (terraform)](#deploy-vms--terraform-)
+    + [Configure VMs (ansible)](#configure-vms--ansible-)
+  * [Horizon Connection Servers](#horizon-connection-servers)
+  * [Credentials](#credentials)
+  * [Servers](#servers)
+  * [References](#references)
+
+## Overview
 
 The goal of this environment is for some VMware Horizon testing. Currently I have a vSphere environment with several Ubuntu servers but zero Windows.
 
-### **Prerequisites**
+### Prerequisites
 
-All the prerequisites are baked into this vagrant ubuntu desktop: [vagrant-ubuntu-desktop](https://github.com/ntalekt/vagrant-ubuntu-desktop)
+* **Hardware**: a vSphere environment (i have a single ESXi host that hosts a vCenter)
+* **Software**: all the software prerequisites are baked into this vagrant ubuntu desktop: [vagrant-ubuntu-desktop](https://github.com/ntalekt/vagrant-ubuntu-desktop)
 
 > **Note**
 > If you already have a linux machine and you'd like to install the prerequisites you can look in the following scripts in [vagrant-ubuntu-desktop](https://github.com/ntalekt/vagrant-ubuntu-desktop)
@@ -14,7 +33,7 @@ All the prerequisites are baked into this vagrant ubuntu desktop: [vagrant-ubunt
 > * [ansible](https://github.com/ntalekt/vagrant-ubuntu-desktop/blob/master/scripts/ansible.sh)
 > * [packer & terraform](https://github.com/ntalekt/vagrant-ubuntu-desktop/blob/master/scripts/ansible.sh)
 
-### **Packer**
+### Packer
 
 Packer creates a Windows Server 2022 vSphere template and ovf that has VMware tools, and some other basic applications installed. 
 
@@ -24,20 +43,20 @@ Packer uses `autounattend.xml` and `sysprep-autounattend.xml` to automate Window
   * Installs & configure OpenSSH Client & Server for remote connection
   * Installs VMware tools from ISO provided from the build ESX server
 
-#### **Files**
+#### File definitions
 
   * `myvarfile.json` All those quality values that will be used
   * `WinServ2022.pkr.hcl` The main top quality with variable declares at the top, and the provisioner steps after.
   * `scripts/win-update.ps1` runs first: updates windows
   * `scripts/adjustments.ps1` runs second: tweaks windows, and installs some tools
   * `scripts/cleanup.ps1` cleans up windows after all the updates
-  * `install-vmware-tools-from-iso.ps1` installs VMware tools so it's baked into the base image.
+  * `scripts/install-vmware-tools-from-iso.ps1` installs VMware tools so it's baked into the base image.
 
 **Packer Provisioner Steps**
 * Updating OS via Windows Update
 * Doing some OS adjustments
   * Set Windows telemetry settings to minimum
-  * Show file extentions by default
+  * Show file extentions by default (TODO: might not work?)
   * Install [Chocolatey](https://chocolatey.org/) - a Windows package manager
     * Install Microsoft Edge (Chromium)
     * Install Win32-OpenSSH-Server
@@ -48,33 +67,35 @@ Packer uses `autounattend.xml` and `sysprep-autounattend.xml` to automate Window
 * Cleanup tasks
 * Remove CDROM drives from VM template (otherwise there would be 2)
 
-### **Terraform**
+### Terraform
 
 Terraform deploys the required virtual machines against infrastructure using the vSphere provider in this case.
 
-#### **Files**
+#### File definitions
 
 * `variables.tf` declares the variables that will be used
 * `terraform.tfvars` All those quality values that will be used
 * `base.tf` defining the vSphere provider and common stuffs
 * `01-PDF.tf` defining the Primary Domain Controller VM
-* `02-ConnServ.tf` defining the Primary Connection Server VM
-* `03-ConnServ2.tf` defining the Second Connection Server VM
+* `01-ConnServ1.tf` defining the Connection Server 1 (standard)
+* `02-ConnServ2.tf` defining the Connection Server 2 (replica1)
+* `03-ConnServ3.tf` defining the Connection Server 3 (replica2)
 
-### **Ansible**
+### Ansible
 
 Configures the VMs once they are deployed. 
 
 * Setup Windows Server Feature: **Domain**
   * Primary Domain Controller
-  * Auto-Join the Virutal Machines to the respective Domain created
-  * Create a few users and groups within Active Directory
+  * Auto-Join the Virutal Machines to the domain
+  * Create a Horizon user and group within Active Directory
 * Install Horizon Connection: Primary
 * Install Horizon Connection: Replica
+  * Register with Primary
 * Common Configurations
   * Enable RDP and allow it through the firewall on all windows servers created
 
-#### **Files**
+#### File definitions
 
 * `inventory.yml` inventory of the hosts we will be touching
 * `winlab_install.yml` an association of the roles to the servers
@@ -144,7 +165,7 @@ Configures the VMs once they are deployed.
     ```
 
 > **Note**
-> This will result in 3 VMs being creating using the variables defined in `terraform.tfvars`
+> This will result in 4 VMs being creating using the variables defined in `terraform.tfvars`
 
 ```bash
 ...
@@ -153,7 +174,9 @@ vsphere_virtual_machine._PDC: Creation complete after 10m11s [id=420b41aa-e3fc-8
 vsphere_virtual_machine._ConnServ: Creation complete after 10m59s [id=420bf9b2-4ed7-a291-fe8f-df3a07d019ab]
 ...
 vsphere_virtual_machine._ConnServ2: Creation complete after 9m50s [id=420baf8a-8b33-95d0-8720-b0efb2e56f1f]
-Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+...
+vsphere_virtual_machine._ConnServ3: Creation complete after 7m38s [id=420b9a46-9743-c9ad-800e-90133a5a2084]
+Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 ```
 > **Warning**
 > Remove the VMs by running `terraform apply -auto-approve -destroy`
@@ -204,8 +227,9 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
   | Server | IP | Purpose |
   | -------- | -------- | -------- |
   | `dc01.windows_lab.local` | `192.168.20.50` | `Domain Controller` |
-  | `cs01.windows_lab.local` | `192.168.20.100` | `Connection Server (standard)` |
-  | `cs02.windows_lab.local` | `192.168.20.101` | `Connection Server (replica)` |
+  | `cs01.windows_lab.local` | `192.168.20.101` | `Connection Server (standard)` |
+  | `cs02.windows_lab.local` | `192.168.20.102` | `Connection Server (replica1)` |
+  | `cs03.windows_lab.local` | `192.168.20.103` | `Connection Server (replica2)` |
 
 ## References
 * Stefan Zimmermann [GitLab](https://gitlab.com/StefanZ8n/packer-ws2022) [Article](https://z8n.eu/2021/11/09/building-a-windows-server-2022-ova-with-packer/)
