@@ -193,7 +193,6 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 
   | Username | Password |
   | -------- | -------- |
-  | `windows_lab\admin` | `Password1234`|
   | `windows_lab\horizonadmin` | `Password1234`|
 
 ## References
