@@ -206,7 +206,7 @@ Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 
 ## Horizon Connection Servers
 
-![Horizon Connection Servers](https://ha.rickrocklin.com/local/horizon_ui_connection_servers.png)
+![Horizon Connection Servers](https://ha.rickrocklin.com/local/horizon_ui_connection_servers2.png)
 
 ## Credentials
 
