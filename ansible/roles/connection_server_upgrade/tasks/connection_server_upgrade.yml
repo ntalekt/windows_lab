@@ -16,6 +16,7 @@
 - name: remove all snapshots
   vmware_guest_snapshot:
     hostname: "{{ vsphere_server }}"
+    username: "{{ vsphere_user }}"
     password: "{{ vsphere_password }}"
     datacenter: "{{ vsphere_dc_name }}"
     folder: "/{{ vsphere_dc_name }}/{{ vsphere_folder }}/"
@@ -37,6 +38,16 @@
     description: "This snapshot is created by Ansible Playbook before upgrading Connection Server from {{ exe_file_version.win_file_version.product_version }}"
   delegate_to: localhost
 
-#2022-12-24T06:30:48.356Z INFO  (09B4-04A4) <1188> [ws_ldap] LDAP Backup Service completed command for LDAP backup to C:\ProgramData\VMware\VDM\backups successfully
-# C:\Program Files\VMware\VMware View\Server\tools\bin>vdmexport -f C:\Install\Backup.LDF
+# default location: C:\ProgramData\VMware\VDM\backups
+- name: backup connection server
+  win_command: '"C:\Program Files\VMware\VMware View\Server\tools\bin\vdmexport.exe" -f "C:\Install\Backup-{{ ansible_date_time.iso8601_basic_short }}.LDF"'
+  become: yes
+  become_method: runas
+  become_user: "{{ hz_admin_user_domain }}"
+  vars:
+    ansible_become_password: "{{ hz_admin_pass }}"
+  register: backup_location
+    
+#.\vdmadmin.exe -Q -disable -server CS01
 # C:\Program Files\VMware\VMware View\Server\tools\bin>vdmimport -d -p Password1234 -f C:\Install\Backup.LDF > C:\Install\BackupDecryptedExport.LDF
+# Get-Module -ListAvailable VMware* | Import-Module -DisableNameChecking
