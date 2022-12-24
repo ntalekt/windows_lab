@@ -19,7 +19,7 @@
 # TODO: Parameterize this
 # bandaid to get hz_admin group sid VDM_INITIAL_ADMIN_SID=
 - name: install connection server
-  win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=1 HTMLACCESS=1 VDM_INITIAL_ADMIN_SID="{{lookup('ansible.builtin.file', '/home/vagrant/github/windows_lab/ansible/bandaid.txt') }}" VDM_SERVER_RECOVERY_PWD="Password1234" VDM_SERVER_RECOVERY_PWD_REMINDER="nothing""
+  win_command: C:\Install\VMware-Horizon-Connection-Server-x86_64-8.4.1-20741546.exe /s /v" /qn FWCHOICE=1 VDM_SERVER_INSTANCE_TYPE=1 HTMLACCESS=1 VDM_INITIAL_ADMIN_SID="{{lookup('ansible.builtin.file', '/home/vagrant/github/windows_lab/ansible/bandaid.txt') }}" VDM_SERVER_RECOVERY_PWD="Password1234" VDM_SERVER_RECOVERY_PWD_REMINDER="nothing""
   become: yes
   become_method: runas
   become_user: "{{ hz_admin_user_domain }}"
