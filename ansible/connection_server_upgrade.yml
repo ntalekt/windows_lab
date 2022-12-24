@@ -1,0 +1,8 @@
+---
+- hosts: cs
+  roles:
+    - connection_server_upgrade
+
+- hosts: csr
+  roles:
+    - connection_server_upgrade
