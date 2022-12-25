@@ -1,8 +1,8 @@
 ---
 - hosts: cs
   roles:
-    - connection_server_upgrade
+    - connection_server_standard_upgrade
 
 - hosts: csr
   roles:
-    - connection_server_upgrade
+    - connection_server_replica_upgrade

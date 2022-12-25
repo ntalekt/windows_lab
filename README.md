@@ -81,7 +81,9 @@ Terraform deploys the required virtual machines against infrastructure using the
 * `02-ConnServ2.tf` defining the Connection Server 2 (replica1)
 * `03-ConnServ3.tf` defining the Connection Server 3 (replica2)
 
-### Ansible
+### Ansible 
+
+#### `winlab_install.yml`
 
 Configures the VMs once they are deployed. 
 
@@ -90,18 +92,36 @@ Configures the VMs once they are deployed.
   * Auto-Join the Virutal Machines to the domain
   * Create a Horizon user and group within Active Directory
 * Install Horizon Connection: Primary
+  * TODO: Configure Events DB
 * Install Horizon Connection: Replica
   * Register with Primary
 * Common Configurations
   * Enable RDP and allow it through the firewall on all windows servers created
 
+#### `connection_server_upgrade.yml`
+
+Upgrade the VMware Connection Servers to a new version 
+
+* Upgrade Horizon Connection: Primary/Replica
+  * Check currently installed version
+  * Take VMware snapshot
+  * Take Connection Server backup
+    * Located: C:\Install\Backup-*
+  * Disable Connection Server client auth
+  * Download new Connection Server binary
+  * Upgrade Connection Server
+  * Check currently installed version
+    * Enable Connection Server client auth
+    * Reboot
+
 #### File definitions
 
 * `inventory.yml` inventory of the hosts we will be touching
-* `winlab_install.yml` an association of the roles to the servers
+* `winlab_install.yml` an association of the roles to the servers for the greenfield base install/configure
+* `connection_server_upgrade.yml` an association of the roles to the servers for the Connection Server upgrade
 * `ansible.cfg` main hotness
 * `group_vars/all.yml` defines all they key:value pairs needed
-* `roles/*` all the different roles and stuff that tells ansible what it needs to do (**hint**: look in `winlab_install.yml`)
+* `roles/*` all the different roles and stuff that tells ansible what it needs to do (**hint**: look in `winlab_install.yml` and `connection_server_upgrade.yml`)
 
 ## Process
 
@@ -181,7 +201,7 @@ Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 > **Warning**
 > Remove the VMs by running `terraform apply -auto-approve -destroy`
 
-### Configure VMs (ansible)
+### Install Software and Configure (ansible) - `winlab_install.yml`
 
 * Update variables in `all.yml.example` and rename
 
@@ -204,9 +224,26 @@ Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 > **Note**
 > Limit running ansible plays against only cs and csr hosts and output in verbose `ansible-playbook winlab_install.yml --limit "cs,csr" -vvv`
 
-## Horizon Connection Servers
+> **Note**
+> The connection servers are in a unconfigured state and at version 8.4.x.
 
-![Horizon Connection Servers](https://ha.rickrocklin.com/local/horizon_ui_connection_servers2.png)
+![Horizon Connection Servers1](https://ha.rickrocklin.com/local/winlab/horizon_ui_connection_servers.png)
+
+### Upgrade Connection Servers (ansible) - `connection_server_upgrade.yml`
+
+* Update binary parameter in `all.yml`
+
+    ```bash
+    #install_binary: "VMware-Horizon-Connection-Server-x86_64-8.4.1-20741546.exe"
+    install_binary: "VMware-Horizon-Connection-Server-x86_64-8.7.0-20649599.exe"
+    ```
+* Run the playbook to configure the servers
+
+    ```bash
+    ansible-playbook connection_server_upgrade.yml
+    ```
+
+![Horizon Connection Servers2](https://ha.rickrocklin.com/local/winlab/horizon_ui_connection_servers2.png)
 
 ## Credentials
 

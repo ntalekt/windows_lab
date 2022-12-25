@@ -7,7 +7,7 @@
     
 - hosts: cs
   roles:
-    - connection_server_install
+    - connection_server_standard_install
     - common
 
 - hosts: csr

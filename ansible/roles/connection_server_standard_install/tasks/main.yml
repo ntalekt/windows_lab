@@ -23,7 +23,7 @@
     folder: "/{{ vsphere_dc_name }}/{{ vsphere_folder }}/"
     description: "This snapshot is created by Ansible Playbook before running any installs"
   delegate_to: localhost
-  
+
 - name: change DNS server
   win_dns_client:
     adapter_names: '*'
@@ -52,4 +52,4 @@
       - windows_lab\hz_admin
     state: present
 
-- include: connection_server_replica.yml
+- include: connection_server_standard.yml
