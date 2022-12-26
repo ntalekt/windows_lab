@@ -7,15 +7,16 @@
 - name: check for connection server version
   win_file_version:
     path: 'C:\Program Files\VMware\VMware View\Server\bin\ws_ConnectionServer.exe'
-  register: exe_file_version
+  register: exe_file_version_before
 
 - debug:
-    msg: 'Found version {{ exe_file_version.win_file_version.product_version }} connection server, upgrading...'
-  when: exe_file_version.win_file_version.product_version != "8.7.0 build-20606795"
+    msg: 'Found version {{ exe_file_version_before.win_file_version.product_version }} connection server, upgrading...'
+  when: exe_file_version_before.win_file_version.product_version != "8.7.0 build-20606795"
+# when: exe_file_version_before.win_file_version.product_version.split(" ")[0] != "8.7.0"
 
 - debug:
-    msg: 'Found version {{ exe_file_version.win_file_version.product_version }} dont need to upgrade'
-  when: exe_file_version.win_file_version.product_version == "8.7.0 build-20606795"
+    msg: 'Found version {{ exe_file_version_before.win_file_version.product_version }} dont need to upgrade'
+  when: exe_file_version_before.win_file_version.product_version == "8.7.0 build-20606795"
 
 # - name: remove all snapshots
 #   vmware_guest_snapshot:
@@ -37,11 +38,11 @@
     validate_certs: "{{ vcenter_validate_certs }}"
     name: "{{ ansible_facts['hostname'] }}"
     state: present
-    snapshot_name: "Ansible Managed Snapshot"
+    snapshot_name: "Ansible Managed Snapshot - Before upgrade"
     folder: "/{{ vsphere_dc_name }}/{{ vsphere_folder }}/"
-    description: "This snapshot is created by Ansible Playbook before upgrading Connection Server from {{ exe_file_version.win_file_version.product_version }}"
+    description: "This snapshot is created by Ansible Playbook before upgrading Connection Server from {{ exe_file_version_before.win_file_version.product_version }}"
   delegate_to: localhost
-  when: exe_file_version.win_file_version.product_version != "8.7.0 build-20606795"
+  when: exe_file_version_before.win_file_version.product_version != "8.7.0 build-20606795"
 
 # default location: C:\ProgramData\VMware\VDM\backups
 - name: backup connection server
@@ -52,7 +53,7 @@
   vars:
     ansible_become_password: "{{ hz_admin_pass }}"
   register: backup_location
-  when: exe_file_version.win_file_version.product_version != "8.7.0 build-20606795"
+  when: exe_file_version_before.win_file_version.product_version != "8.7.0 build-20606795"
 
 # not 100% sure this is the same as the disable button in the ui under
 - name: disable connection server for client auth
@@ -62,13 +63,13 @@
   become_user: "{{ hz_admin_user_domain }}"
   vars:
     ansible_become_password: "{{ hz_admin_pass }}"
-  when: exe_file_version.win_file_version.product_version != "8.7.0 build-20606795"
+  when: exe_file_version_before.win_file_version.product_version != "8.7.0 build-20606795"
 
 - name: download connection server installer
   win_get_url:
-    url: "{{ install_url }}"
-    dest: "{{ install_binary_dest }}"
-  when: exe_file_version.win_file_version.product_version != "8.7.0 build-20606795"
+    url: "{{ install_url_upgrade }}"
+    dest: "{{ install_binary_dest_upgrade }}"
+  when: exe_file_version_before.win_file_version.product_version != "8.7.0 build-20606795"
 
 # TODO: Parameterize this
 # bandaid to get hz_admin group sid VDM_INITIAL_ADMIN_SID=
@@ -79,15 +80,15 @@
   become_user: "{{ hz_admin_user_domain }}"
   vars:
     ansible_become_password: "{{ hz_admin_pass }}"
-  when: exe_file_version.win_file_version.product_version != "8.7.0 build-20606795"
+  when: exe_file_version_before.win_file_version.product_version != "8.7.0 build-20606795"
 
 - name: check for connection server version
   win_file_version:
     path: 'C:\Program Files\VMware\VMware View\Server\bin\ws_ConnectionServer.exe'
-  register: exe_file_version
+  register: exe_file_version_after
 
 - debug:
-    msg: 'Found version {{ exe_file_version.win_file_version.product_version }} after upgrade.'
+    msg: 'Found version {{ exe_file_version_after.win_file_version.product_version }} after upgrade.'
 
 - name: enable connection server for client auth
   win_command: '"C:\Program Files\VMware\VMware View\Server\tools\bin\vdmadmin.exe" -Q -enable -server "{{ ansible_netbios_name }}"'
@@ -96,7 +97,7 @@
   become_user: "{{ hz_admin_user_domain }}"
   vars:
     ansible_become_password: "{{ hz_admin_pass }}"
-  when: exe_file_version.win_file_version.product_version == "8.7.0 build-20606795"
+  when: exe_file_version_after.win_file_version.product_version == "8.7.0 build-20606795"
 
 - name: reboot after connect server installed
   win_reboot:
@@ -104,10 +105,14 @@
     pre_reboot_delay: 15
     reboot_timeout: 900
     post_reboot_delay: 600
-  when: exe_file_version.win_file_version.product_version == "8.7.0 build-20606795"
+  when:  (exe_file_version_before.win_file_version.product_version != "8.7.0 build-20606795") and (exe_file_version_after.win_file_version.product_version == "8.7.0 build-20606795")
 
 # vdmadmin.exe -Q -disable -server CS01
 # vdmadmin.exe -Q -enable -server CS01
 # vdmadmin.exe -Q -clientauth -list -xml
 # C:\Program Files\VMware\VMware View\Server\tools\bin>vdmimport -d -p Password1234 -f C:\Install\Backup.LDF > C:\Install\BackupDecryptedExport.LDF
 # Get-Module -ListAvailable VMware* | Import-Module -DisableNameChecking
+#
+# Formatting and quoting: https://groups.google.com/g/ansible-project/c/1GzNE4XbrUo/m/ID6OmNKODgAJ
+# vdmadmin.exe: https://valcesia.com/2019/09/02/vdmadmin/
+# https://medium.com/@toja/ansible-tip-split-a-string-on-a-delimiter-888ff937fc3e
