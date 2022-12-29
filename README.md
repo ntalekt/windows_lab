@@ -56,7 +56,7 @@ Packer uses `autounattend.xml` and `sysprep-autounattend.xml` to automate Window
 * Updating OS via Windows Update
 * Doing some OS adjustments
   * Set Windows telemetry settings to minimum
-  * Show file extentions by default (TODO: might not work?)
+  * Show file extensions by default (TODO: might not work?)
   * Install [Chocolatey](https://chocolatey.org/) - a Windows package manager
     * Install Microsoft Edge (Chromium)
     * Install Win32-OpenSSH-Server
@@ -89,7 +89,7 @@ Configures the VMs once they are deployed.
 
 * Setup Windows Server Feature: **Domain**
   * Primary Domain Controller
-  * Auto-Join the Virutal Machines to the domain
+  * Auto-Join the Virtual Machines to the domain
   * Create a Horizon user and group within Active Directory
 * Install Horizon Connection: Primary
   * TODO: Configure Events DB
@@ -107,11 +107,11 @@ Upgrade the VMware Connection Servers to a new version
   * Take VMware snapshot
   * Take Connection Server backup
     * Located: C:\Install\Backup-*
-  * Disable Connection Server client auth
+  * Disable Connection Server client authentication
   * Download new Connection Server binary
   * Upgrade Connection Server
   * Check currently installed version
-    * Enable Connection Server client auth
+    * Enable Connection Server client authentication
     * Reboot
 
 #### File definitions
@@ -147,7 +147,7 @@ Upgrade the VMware Connection Servers to a new version
     packer build -timestamp-ui -force -var-file=myvarfile.json WinServ2022.pkr.hcl
     ```
 > **Note**
-> This will result in a template in your vSphere infrastructure named WinServ2022 and an ovf in the build directory.
+> This will result in a template in your vSphere infrastructure named WinServ2022 and an OVF in the build directory.
 
 ```bash
 2022-12-17T16:41:40-07:00: Build 'WinServ2022.vsphere-iso.WinServ2022' finished after 1 hour 11 minutes.
@@ -222,7 +222,7 @@ Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
     ```
 
 > **Note**
-> Limit running ansible plays against only cs and csr hosts and output in verbose `ansible-playbook winlab_install.yml --limit "cs,csr" -vvv`
+> Limit running ansible plays against only connection server and replica hosts and output in verbose `ansible-playbook winlab_install.yml --limit "cs,csr" -vvv`
 
 > **Note**
 > The connection servers are in a unconfigured state and at version 8.4.x.
@@ -276,3 +276,37 @@ Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
   * [Silent Installation Properties for a Horizon Connection Server Standard Installation](https://docs.vmware.com/en/VMware-Horizon/2209/horizon-installation/GUID-56F893BE-91D0-44CF-9C5B-26E28926C3F8.html)
 * [Horizon View Connection Server with Ansible](https://www.codecrusaders.nl/devops/ansible/horizon-view-connection-server-with-ansible/)
 * [ansible.windows.win_package module – Installs/uninstalls an installable package](https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_package_module.html#examples)
+
+## Scratchpad
+### Jenkins install
+
+* deploy a GCP VM (free tier)
+```bash
+gcloud compute instances create gcp-docker-01 --project=jenkins-372604 --zone=us-west1-b --machine-type=e2-micro --network-interface=network-tier=PREMIUM,subnet=default --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=871997622931-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --create-disk=auto-delete=yes,boot=yes,device-name=jenkins-1,image=projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20221201,mode=rw,size=10,type=projects/jenkins-372604/zones/us-west1-b/diskTypes/pd-standard --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --reservation-affinity=any
+```
+
+* Connect to the VM
+
+```bash
+export PROJECT_ID=$(gcloud config get-value project)
+export ZONE=$(gcloud config get-value compute/zone)
+echo -e "PROJECT ID: $PROJECT_ID\nZONE: $ZONE"
+
+gcloud compute instances list
+
+gcloud compute ssh gcp-docker-01
+```
+
+* Install docker: https://github.com/ntalekt/vagrant-ubuntu-docker/blob/master/scripts/docker.sh
+
+### TODO
+* Parameterize the installation and upgrade ansible roles. Possible to condense into a single connection server installation role and have the parameters control the installation type?
+* install_connection_server_release.sh - continue to complete the install script as parameters exist. MVP only input will be install_connection_server_release.sh -f <pod> -r <test || WLR-nn>
+* automation
+  * packer image update process
+  * connection server vendor download process
+  * auto upgrade pod process
+  * pod-management pipeline
+    * what's the bare minimum that you need to configure in order to provision a single VDI?
+    * pod-management pipeline will run every n minutes and try to connect to the pod and configure it, or re-configure it, or do nothing to it, or time out trying to connection to it
+* figure out how to git repo for release files would work.
